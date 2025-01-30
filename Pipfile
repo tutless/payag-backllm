@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+black = "*"
+langchain = "*"
+langchain-community = "*"
+openai = "*"
+langchain-openai = "*"
+langchain-pinecone = "*"
+flask = "*"
+flask-smorest = "*"
+grpcio = "*"
+grpcio-tools = "*"
+reactivex = "*"
+grpcio-reflection = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

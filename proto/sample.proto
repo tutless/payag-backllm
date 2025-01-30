@@ -1,0 +1,22 @@
+//protoc --python_out=./output_dir --pyi_out=./output_dir your_proto_file.proto
+
+//python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. proto/calculator.proto
+//python -m grpc_tools.protoc -I../../protos --python_out=. --pyi_out=. --grpc_python_out=. ../../protos/route_guide.proto
+
+syntax = "proto3";
+
+package sample;
+
+service SampleService{
+   rpc SampleQuery (ReqQuery) returns (ResAnswer);
+}
+
+message ReqQuery{
+    string query = 1;
+}
+
+message ResAnswer{
+    string answer = 1;
+
+    
+}

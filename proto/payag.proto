@@ -1,0 +1,24 @@
+// python -m grpc_tools.protoc -I payag --python_out=. --pyi_out=. --grpc_python_out=. proto/payag.proto
+
+syntax = "proto3";
+package payag;
+
+service PayagService{
+    rpc SayHello(HelloRequest) returns (HelloReply);
+    rpc Chat(ChatQuery) returns (ChatResponse);
+}
+
+message HelloRequest{
+    string name = 1;
+}
+
+message HelloReply{
+    string message = 1;
+}
+
+message ChatQuery{
+    string query = 1;
+}
+message ChatResponse{
+    string answer = 1;
+}
