@@ -16,6 +16,9 @@ grpcio = "*"
 grpcio-tools = "*"
 reactivex = "*"
 grpcio-reflection = "*"
+chromadb = "*"
+langchain-chroma = "*"
+langchain-huggingface = "*"
 
 [dev-packages]
 

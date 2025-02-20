@@ -13,7 +13,7 @@ class VectorStore:
             api_key=os.getenv("OPENAI_API_KEY"), model=os.getenv("EMBEDDING_MODEL")
         )
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000, chunk_overlap=50
+            chunk_size=600, chunk_overlap=50
         )
         self.vectore_store = PineconeVectorStore(
             index_name=os.getenv("INDEX_NAME"), embedding=self.embeddings

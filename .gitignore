@@ -1,2 +1,8 @@
 __pycache__/
 .vscode/
+.gitignore
+Pipfile
+Pipfile.lock
+Dockerfile
+jurisprudence
+.dockerignore

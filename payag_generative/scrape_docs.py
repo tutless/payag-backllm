@@ -2,15 +2,15 @@ import os
 import reactivex as rx
 from reactivex import operators as ops
 from langchain_community.document_loaders import TextLoader
-from vstore import VectorStore
 
 
-class Ingestion:
+class ScapeDocs:
     def __init__(self):
-        self.root_path = r"C:\DownloadedWeb\payag\lawphil.net".replace("\\", "/")
+        self.root_path = os.path.join(
+            os.getcwd(), "payag_generative", "jurisprudence", "courts", "rules"
+        )
 
     def walk_through(self):
-
         return (
             rx.from_iterable(os.walk(self.root_path))
             .pipe(
@@ -35,23 +35,19 @@ class Ingestion:
 
     def rx_documents(self):
         return self.walk_through().pipe(
-            ops.flat_map(lambda path: rx.from_iterable(path).pipe(self.text_loader())),
+            ops.flat_map(
+                lambda path: rx.from_iterable(path).pipe(self.text_loader()),
+            ),
         )
 
-    def rx_addstore(self):
-        self.rx_documents().subscribe(
-            lambda x: print(len(x)), lambda e: print(e), lambda: print("done...")
-        )
-        # self.rx_documents().subscribe(
-        #     lambda x: VectorStore().pinecone_store(x),
-        #     lambda e: print(e),
-        #     lambda: print("done"),
-        # )
-
-    @classmethod
-    def ingest_documents(cls):
-        cls().rx_addstore()
+    def buffer_docs(self):
+        return self.rx_documents().pipe(ops.buffer_with_count(200))
 
 
-if __name__ == "__main__":
-    Ingestion.ingest_documents()
+# if __name__ == "__main__":
+#     data_ingest = ScapeDocs()
+#     data_ingest.rx_documents().subscribe(
+#         on_next=lambda x: print(len(x)),
+#         on_error=lambda error: print(error),
+#         on_completed=lambda: print("completed"),
+#     )
