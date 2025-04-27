@@ -6,9 +6,11 @@ from langchain_community.document_loaders import TextLoader
 
 class ScapeDocs:
     def __init__(self):
-        self.root_path = os.path.join(
-            os.getcwd(), "payag_generative", "jurisprudence", "courts", "rules"
-        )
+        # self.root_path = os.path.join(
+        #     os.getcwd(), "payag_generative", "jurisprudence", "courts", "rules"
+
+        # )
+        self.root_path = os.path.join("/", "source")
 
     def walk_through(self):
         return (
@@ -41,7 +43,7 @@ class ScapeDocs:
         )
 
     def buffer_docs(self):
-        return self.rx_documents().pipe(ops.buffer_with_count(200))
+        return self.rx_documents().pipe(ops.buffer_with_count(100))
 
 
 # if __name__ == "__main__":

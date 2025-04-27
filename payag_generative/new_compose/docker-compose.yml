@@ -1,0 +1,51 @@
+services:
+  weaviate:
+    container_name: weaviate
+    image: cr.weaviate.io/semitechnologies/weaviate
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    environment:
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      AUTHENTICATION_OIDC_ENABLED: 'false'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      # AUTHENTICATION_OIDC_ISSUER: 'http://keycloak:8080/realms/payag-weaviate'
+      # AUTHENTICATION_OIDC_ISSUER: 'http://100.112.56.121:8081/realms/payag-weaviate'
+      # AUTHENTICATION_OIDC_CLIENT_ID: payag-weaviate-client
+      # AUTHENTICATION_OIDC_USERNAME_CLAIM: 'preferred_username'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/v1/.well-known/ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - weaviate-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.1
+    restart: unless-stopped
+    command: start-dev
+    ports:
+      - "8081:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin 
+    networks:
+     - weaviate-network 
+  
+  
+
+volumes:
+  weaviate_data:
+  keycloak_data:
+
+networks:
+  weaviate-network:
+    driver: bridge
+
+
+     

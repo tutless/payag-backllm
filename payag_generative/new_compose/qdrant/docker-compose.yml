@@ -1,0 +1,29 @@
+services:
+  qdrant:
+    container_name: q_container
+    image: qdrant/qdrant
+    restart: unless-stopped
+    ports:
+      - "8333:6333"
+      - "8334:6334"
+    volumes:
+      - /home/ai/payag/legal_vector/:/qdrant/storage
+    networks:
+      - qdrant-net
+
+  ingestion:
+    image: tutless/ingestion:latest
+    container_name: ingestion_gpu
+    volumes:
+      - /home/ai/payag/Batch_1/lawphil.net/:/source
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    networks:
+      - qdrant-net
+    depends_on:
+      - qdrant
+
+networks:
+  qdrant-net:
+    driver: bridge

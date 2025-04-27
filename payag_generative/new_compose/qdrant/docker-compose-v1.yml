@@ -1,0 +1,16 @@
+services:
+  qdrant:
+    container_name: q_container
+    image: qdrant/qdrant
+    restart: unless-stopped
+    ports:
+      - "8333:6333"
+      - "8334:6334"
+    volumes:
+      - /home/ai/payag/legal_vector/:/qdrant/storage
+    networks:
+      - qdrant-net
+      
+networks:
+  qdrant-net:
+    driver: bridge

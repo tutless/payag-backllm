@@ -1,0 +1,17 @@
+services:
+  ingestion:
+    image: tutless/ingestion:latest
+    container_name: ingestion_gpu
+    volumes:
+      - /home/ai/payag/Batch_1/lawphil.net/:/source
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    networks:
+      - qdrant-net
+
+networks:
+  qdrant-net:
+    external: true
+    name: qdrant_qdrant-net
+
