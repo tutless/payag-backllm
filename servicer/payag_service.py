@@ -1,5 +1,6 @@
 from proto import payag_pb2, payag_pb2_grpc
 from payag_llm.llm_core import LLMCore
+from payag_generative.generative_core import GenerativeCore
 
 
 class PayagService(payag_pb2_grpc.PayagServiceServicer):
@@ -9,4 +10,5 @@ class PayagService(payag_pb2_grpc.PayagServiceServicer):
 
     def Chat(self, request, context):
         print("Chat method called")
-        return payag_pb2.ChatResponse(answer=LLMCore.answer(request.query))
+        return payag_pb2.ChatResponse(answer=GenerativeCore.answer(request.query))
+        # return payag_pb2.ChatResponse(answer=LLMCore.answer(request.query))

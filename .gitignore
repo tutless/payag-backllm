@@ -6,3 +6,5 @@ Pipfile.lock
 Dockerfile
 jurisprudence
 .dockerignore
+.env
+.gitignore

@@ -19,8 +19,14 @@ grpcio-reflection = "*"
 chromadb = "*"
 langchain-chroma = "*"
 langchain-huggingface = "*"
+python-dotenv = "*"
+langchain-nvidia-ai-endpoints = "*"
+weaviate-client = "*"
+langchain-weaviate = "*"
+langchain-qdrant = "*"
+qdrant-client = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.12"
+python_version = "3.10"
