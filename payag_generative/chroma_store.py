@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from vector_store import VectorStore
+from payag_generative.vector_store import VectorStore
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter

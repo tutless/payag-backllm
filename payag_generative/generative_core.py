@@ -8,6 +8,7 @@ from langchain.chains.history_aware_retriever import create_history_aware_retrie
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from payag_generative.qdrant_store import QdrantStore
 from payag_generative.vector_store import VectorStore
 from payag_generative.pinecone_store import PineconeStore
 from payag_generative.chroma_store import ChromaStore
@@ -17,7 +18,7 @@ load_dotenv()
 
 
 class GenerativeCore:
-    def __init__(self, vstore: VectorStore[PineconeStore]):
+    def __init__(self, vstore: VectorStore[QdrantStore]):
         self.vstore = vstore
         self.repharase_prompt = hub.pull("langchain-ai/chat-langchain-rephrase")
         self.store = {}
@@ -89,7 +90,7 @@ class GenerativeCore:
 
     @classmethod
     def answer(cls, query: str):
-        store = PineconeStore()
+        store = QdrantStore()
         core = cls(store)
         final_answer = core.conversational_rag_chain().invoke(
             {"input": query}, config={"configurable": {"session_id": "payag_session"}}
