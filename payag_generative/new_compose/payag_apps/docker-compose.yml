@@ -15,6 +15,9 @@ services:
     container_name: llm_server
     image: payag/llmserver
     restart: unless-stopped
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
     ports:
       - "51150:51150"
     depends_on:
