@@ -1,0 +1,39 @@
+services:
+  qdrant:
+    container_name: q_container
+    image: qdrant/qdrant
+    restart: unless-stopped
+    ports:
+      - "8333:6333"
+      - "8334:6334"
+    volumes:
+      - /home/ai/payag/legal_vector/:/qdrant/storage
+    networks:
+      - payagbot
+
+  llmserver:
+    container_name: llm_server
+    image: payag/llmserver
+    restart: unless-stopped
+    ports:
+      - "51150:51150"
+    depends_on:
+      - qdrant
+    networks:
+      - payagbot
+  
+  nodeserver:
+    container_name: node_server
+    image: payag/node_server
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    depends_on:
+      - llmserver
+    networks:
+      - payagbot
+    
+ 
+networks:
+  payagbot:
+    driver: bridge

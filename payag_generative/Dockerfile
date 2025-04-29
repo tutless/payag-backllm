@@ -30,7 +30,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /root/.cache/pip
 
 # Set working directory
-WORKDIR /llmsvr
+WORKDIR /ingestion
 
 # Keep virtualenv inside project dir
 ENV PIPENV_VENV_IN_PROJECT=true
@@ -57,7 +57,7 @@ RUN pipenv run pip install sentence-transformers
 RUN pipenv run pip list
 
 # Add venv to path for shell access
-ENV PATH="/llmsvr/.venv/bin:$PATH"
+ENV PATH="/ingestion/.venv/bin:$PATH"
 
 # Copy the full application
 COPY . .
@@ -65,11 +65,8 @@ COPY . .
 # Set CUDA library path
 ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/lib:/usr/lib/x86_64-linux-gnu
 
-# Expose port
-
-EXPOSE 5888
-
-EXPOSE 51150
+# Mount volume at /source
+VOLUME ["/source"]
 
 # Default command
-CMD ["pipenv", "run", "python", "server.py"]
+CMD ["pipenv", "run", "python", "data_ingestion.py"]
