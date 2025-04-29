@@ -3,15 +3,15 @@ services:
     image: tutless/ingestion:latest
     container_name: ingestion_gpu
     volumes:
-      - /home/ai/payag/Batch_1/lawphil.net/:/source
+      - /home/ai/payag/payag_clean_tags/lawphil.net/:/source
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     networks:
-      - qdrant-net
+      - payagbot
 
 networks:
-  qdrant-net:
+  payagbot:
     external: true
-    name: qdrant_qdrant-net
+    name: payag_app_payagbot
 
