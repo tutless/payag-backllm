@@ -11,11 +11,13 @@ from langchain_qdrant import QdrantVectorStore
 class QdrantStore(VectorStore):
     def __init__(self):
         self.embedding_model = HuggingFaceEmbeddings(
-            model_name="nlpaueb/legal-bert-base-uncased"
+            model_name="BAAI/bge-large-en-v1.5",
+            model_kwargs={"device": "cuda"},
+            encode_kwargs={"normalize_embeddings": True},
         )
 
         self.qdrant_client = QdrantClient(host="qdrant", port=6333)
-        self.collection_name = "payag_legal"
+        self.collection_name = "payag_legal_big"
         self.create_collection()
         self.qdrant = QdrantVectorStore(
             client=self.qdrant_client,
@@ -27,7 +29,7 @@ class QdrantStore(VectorStore):
         if not self.qdrant_client.collection_exists(self.collection_name):
             self.qdrant_client.create_collection(
                 collection_name=self.collection_name,
-                vectors_config=VectorParams(size=768, distance=Distance.COSINE),
+                vectors_config=VectorParams(size=1024, distance=Distance.COSINE),
             )
         else:
             print(
@@ -36,7 +38,7 @@ class QdrantStore(VectorStore):
 
     def splitted_docs(self, docs: list[Document]):
         return RecursiveCharacterTextSplitter(
-            chunk_size=512, chunk_overlap=128, separators=["\n\n", "\n", ".", " ", ""]
+            chunk_size=2048, chunk_overlap=256, separators=["\n\n", "\n", ".", " ", ""]
         ).split_documents(documents=docs)
 
     def vector_store(self, docs: list[Document]):
