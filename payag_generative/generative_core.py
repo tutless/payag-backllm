@@ -9,13 +9,15 @@ from langchain import hub
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
-from langchain_community.chat_message_histories import ChatMessageHistory
+
+# from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from payag_generative.qdrant_store import QdrantStore
 from payag_generative.vector_store import VectorStore
 from payag_generative.pinecone_store import PineconeStore
 from payag_generative.chroma_store import ChromaStore
+from payag_generative.chat_history import TrimmedChatMessageHistory
 
 
 load_dotenv()
@@ -83,7 +85,7 @@ class GenerativeCore:
 
     def get_session_history(self, session_id: str) -> BaseChatMessageHistory:
         if session_id not in self.store:
-            self.store[session_id] = ChatMessageHistory()
+            self.store[session_id] = TrimmedChatMessageHistory(max_messages=6)
         return self.store[session_id]
 
     def conversational_rag_chain(self):
