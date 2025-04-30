@@ -3,7 +3,7 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 
 class TrimmedChatMessageHistory(ChatMessageHistory):
     def __init__(self, max_messages=6):
-        super.__init__()
+        super().__init__()
         self.max_messages = max_messages
 
     def add_message(self, message):
