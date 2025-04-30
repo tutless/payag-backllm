@@ -1,3 +1,7 @@
+import os
+
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+import torch
 from dotenv import load_dotenv
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -22,11 +26,14 @@ class GenerativeCore:
         self.vstore = vstore
         self.repharase_prompt = hub.pull("langchain-ai/chat-langchain-rephrase")
         self.store = {}
-
-    def llm_model(self):
-        return ChatNVIDIA(
-            model="meta/llama-3.1-405b-instruct", temperature=0.1, max_token=1024
+        self.chat_model = ChatNVIDIA(
+            model="meta/llama-3.1-8b-instruct", temperature=0.1, max_token=1024
         )
+
+    # def llm_model(self):
+    #     return ChatNVIDIA(
+    #         model="meta/llama-3.1-405b-instruct", temperature=0.1, max_token=1024
+    #     )
 
     def main_prompt(self):
 
@@ -60,14 +67,14 @@ class GenerativeCore:
 
     def history_aware_retriever(self):
         return create_history_aware_retriever(
-            llm=self.llm_model(),
+            llm=self.chat_model,
             retriever=self.retriever(),
             prompt=self.contextual_prompt(),
         )
 
     def rag_chain(self):
         question_answer_chain = create_stuff_documents_chain(
-            llm=self.llm_model(), prompt=self.main_prompt()
+            llm=self.chat_model, prompt=self.main_prompt()
         )
         return create_retrieval_chain(
             retriever=self.history_aware_retriever(),
@@ -92,11 +99,15 @@ class GenerativeCore:
     def answer(cls, query: str):
         store = QdrantStore()
         core = cls(store)
-        final_answer = core.conversational_rag_chain().invoke(
-            {"input": query}, config={"configurable": {"session_id": "payag_session"}}
-        )
 
-        return final_answer["answer"]
+        try:
+            final_answer = core.conversational_rag_chain().invoke(
+                {"input": query},
+                config={"configurable": {"session_id": "payag_session"}},
+            )
+            return final_answer["answer"]
+        finally:
+            torch.cuda.empty_cache()
 
 
 # if __name__ == "__main__":
