@@ -1,9 +1,10 @@
+from typing import ClassVar
 from langchain_community.chat_message_histories import ChatMessageHistory
 
 
 class TrimmedChatMessageHistory(ChatMessageHistory):
 
-    max_msg = 3
+    max_msg: ClassVar[int] = 3
 
     def add_message(self, message):
         super().add_message(message)
