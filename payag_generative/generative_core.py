@@ -85,7 +85,7 @@ class GenerativeCore:
 
     def get_session_history(self, session_id: str) -> BaseChatMessageHistory:
         if session_id not in self.store:
-            self.store[session_id] = TrimmedChatMessageHistory(max_msg=3)
+            self.store[session_id] = TrimmedChatMessageHistory()
         return self.store[session_id]
 
     def conversational_rag_chain(self):
