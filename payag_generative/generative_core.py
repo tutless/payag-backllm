@@ -17,7 +17,7 @@ from payag_generative.qdrant_store import QdrantStore
 from payag_generative.vector_store import VectorStore
 from payag_generative.pinecone_store import PineconeStore
 from payag_generative.chroma_store import ChromaStore
-from payag_generative.chat_history import TrimmedChatMessageHistory
+from payag_generative.chat_history_trim import TrimmedChatMessageHistory
 
 
 load_dotenv()

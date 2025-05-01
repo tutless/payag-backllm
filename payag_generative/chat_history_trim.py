@@ -9,4 +9,4 @@ class TrimmedChatMessageHistory(ChatMessageHistory):
     def add_message(self, message):
         super().add_message(message)
         if len(self.messages) > self.max_msg:
-            self.messages = self.messages[-self.msg :]
+            self.messages = self.messages[-self.max_msg :]
