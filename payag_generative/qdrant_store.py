@@ -17,7 +17,7 @@ class QdrantStore(VectorStore):
         )
 
         self.qdrant_client = QdrantClient(host="qdrant", port=6333)
-        self.collection_name = "payag_legal_big"
+        self.collection_name = "payag_legal_mid"
         self.create_collection()
         self.qdrant = QdrantVectorStore(
             client=self.qdrant_client,
@@ -38,7 +38,7 @@ class QdrantStore(VectorStore):
 
     def splitted_docs(self, docs: list[Document]):
         return RecursiveCharacterTextSplitter(
-            chunk_size=2048, chunk_overlap=256, separators=["\n\n", "\n", ".", " ", ""]
+            chunk_size=500, chunk_overlap=100, separators=["\n\n", "\n", ".", " ", ""]
         ).split_documents(documents=docs)
 
     def vector_store(self, docs: list[Document]):

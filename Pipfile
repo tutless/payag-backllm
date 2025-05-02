@@ -10,8 +10,6 @@ langchain-community = "*"
 openai = "*"
 langchain-openai = "*"
 langchain-pinecone = "*"
-flask = "*"
-flask-smorest = "*"
 grpcio = "*"
 grpcio-tools = "*"
 reactivex = "*"
@@ -25,6 +23,9 @@ weaviate-client = "*"
 langchain-weaviate = "*"
 langchain-qdrant = "*"
 qdrant-client = "*"
+transformers = "*"
+accelerate = "*"
+bitsandbytes = "*"
 
 [dev-packages]
 
