@@ -32,7 +32,7 @@ class GenerativeCore:
         # self.chat_model = ChatNVIDIA(
         #     model="meta/llama-3.1-8b-instruct", temperature=0.1, max_token=1024
         # )
-        self.chat_model = LLModelPipeline(model_id="meta/llama-3.1-8b-instruct")
+        self.chat_model = LLModelPipeline(model_id="meta-llama/Llama-3.1-8B-Instruct")
 
     def main_prompt(self):
 
