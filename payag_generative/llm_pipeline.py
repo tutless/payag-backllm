@@ -21,7 +21,9 @@ class LLModelPipeline:
             llm_int8_skip_modules=None,
             llm_int8_enable_fp32_cpu_offload=True,
         )
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            self.model_id, token=os.getenv("HF_TOKEN")
+        )
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
             device_map="auto",
