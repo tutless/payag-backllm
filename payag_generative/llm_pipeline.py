@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 import torch
 from transformers import (
     BitsAndBytesConfig,
@@ -6,6 +7,8 @@ from transformers import (
     pipeline,
 )
 from langchain_huggingface import HuggingFacePipeline
+
+load_dotenv()
 
 
 class LLModelPipeline:
