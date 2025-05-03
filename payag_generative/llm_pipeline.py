@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 import torch
 from transformers import (
@@ -24,6 +25,7 @@ class LLModelPipeline:
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
             device_map="auto",
+            token=os.getenv("HF_TOKEN"),
             quantization_config=self.bnb_config,
             torch_dtype=torch.float16,
         )
