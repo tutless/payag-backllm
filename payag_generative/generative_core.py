@@ -20,6 +20,7 @@ from payag_generative.pinecone_store import PineconeStore
 from payag_generative.chroma_store import ChromaStore
 from payag_generative.chat_history_trim import TrimmedChatMessageHistory
 from payag_generative.llm_pipeline import LLModelPipeline
+from langchain.memory import ConversationBufferWindowMemory
 
 
 load_dotenv()
@@ -90,19 +91,33 @@ class GenerativeCore:
             combine_docs_chain=question_answer_chain,
         )
 
-    def get_session_history(self, session_id: str) -> BaseChatMessageHistory:
+    def get_session_history(self, session_id: str) -> ConversationBufferWindowMemory:
         if session_id not in self.store:
-            self.store[session_id] = TrimmedChatMessageHistory()
+            self.store[session_id] = ConversationBufferWindowMemory(
+                k=5, return_messages=True
+            )
         return self.store[session_id]
 
-    def conversational_rag_chain(self):
+    # def get_session_history(self) -> BaseChatMessageHistory:
+    #     if session_id not in self.store:
+    #         self.store[session_id] = ChatMessageHistory
+    #     return self.store[session_id]
+
+    def conversational_rag_chain(self, session_id: str):
         return RunnableWithMessageHistory(
             self.rag_chain(),
-            self.get_session_history,
+            lambda _: self.get_session_history(session_id=session_id).chat_memory,
             input_messages_key="input",
             history_messages_key="chat_history",
             output_messages_key="answer",
         )
+        # return RunnableWithMessageHistory(
+        #     self.rag_chain(),
+        #     self.get_session_history(),
+        #     input_messages_key="input",
+        #     history_messages_key="chat_history",
+        #     output_messages_key="answer",
+        # )
 
     @staticmethod
     def freeup_memory():
@@ -116,14 +131,29 @@ class GenerativeCore:
         store = QdrantStore()
         core = cls(store)
         try:
-            final_answer = core.conversational_rag_chain().invoke(
+            final_answer = core.conversational_rag_chain(
+                session_id="payag_session_1"
+            ).invoke(
                 {"input": query},
-                config={"configurable": {"session_id": "payag_session"}},
             )
             return final_answer["answer"]
         finally:
             del core
             cls.freeup_memory()
+
+    # @classmethod
+    # def answer(cls, query: str):
+    #     store = QdrantStore()
+    #     core = cls(store)
+    #     try:
+    #         final_answer = core.conversational_rag_chain().invoke(
+    #             {"input": query},
+    #             config={"configurable": {"session_id": "payag_session_1"}},
+    #         )
+    #         return final_answer["answer"]
+    #     finally:
+    #         del core
+    #         cls.freeup_memory()
 
 
 # if __name__ == "__main__":
