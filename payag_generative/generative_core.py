@@ -30,12 +30,12 @@ class GenerativeCore:
         self.vstore = vstore
         self.repharase_prompt = hub.pull("langchain-ai/chat-langchain-rephrase")
         self.store = {}
-        # self.chat_model = ChatNVIDIA(
-        #     model="meta/llama-3.1-8b-instruct", temperature=0.1, max_token=1024
-        # )
-        self.chat_model = LLModelPipeline.load_pipeline(
-            model_id="meta-llama/Llama-3.1-8B-Instruct"
+        self.chat_model = ChatNVIDIA(
+            model="meta/llama-3.1-8b-instruct", temperature=0.1, max_token=1024
         )
+        # self.chat_model = LLModelPipeline.load_pipeline(
+        #     model_id="meta-llama/Llama-3.1-8B-Instruct"
+        # )
 
     def main_prompt(self):
 
