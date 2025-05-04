@@ -1,4 +1,5 @@
 import os
+import gc
 from dotenv import load_dotenv
 import torch
 from transformers import (
@@ -23,24 +24,37 @@ class LLModelPipeline:
             llm_int8_skip_modules=None,
             llm_int8_enable_fp32_cpu_offload=True,
         )
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            self.model_id, token=os.getenv("HF_TOKEN")
-        )
-        self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_id,
-            device_map="auto",
-            token=os.getenv("HF_TOKEN"),
-            quantization_config=self.bnb_config,
-            torch_dtype=torch.float16,
-        )
-        self.generation_pipe = pipeline(
-            "text-generation",
-            model=self.model,
-            tokenizer=self.tokenizer,
-            max_new_tokens=1024,
-            temperature=0.1,
-            repetition_penalty=1.1,
-        )
+
+        try:
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                self.model_id, token=os.getenv("HF_TOKEN")
+            )
+
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_id,
+                device_map="auto",
+                token=os.getenv("HF_TOKEN"),
+                quantization_config=self.bnb_config,
+                torch_dtype=torch.float16,
+            )
+            self.generation_pipe = pipeline(
+                "text-generation",
+                model=self.model,
+                tokenizer=self.tokenizer,
+                max_new_tokens=1024,
+                temperature=0.1,
+                repetition_penalty=1.1,
+            )
+
+        except Exception as e:
+            print(f"[!] Error initializing pipeline: {e}")
+            LLModelPipeline.freeup_memory()
+            raise
+
+    @staticmethod
+    def freeup_memory():
+        gc.collect()
+        torch.cuda.empty_cache()
 
     @classmethod
     def load_pipeline(cls, model_id):

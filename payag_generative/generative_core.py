@@ -1,4 +1,5 @@
 import os
+import gc
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import torch
@@ -107,7 +108,6 @@ class GenerativeCore:
     def freeup_memory():
         torch.cuda.empty_cache()
         torch.cuda.synchronize()
-        import gc
 
         gc.collect()
 
@@ -115,7 +115,6 @@ class GenerativeCore:
     def answer(cls, query: str):
         store = QdrantStore()
         core = cls(store)
-
         try:
             final_answer = core.conversational_rag_chain().invoke(
                 {"input": query},
@@ -123,6 +122,7 @@ class GenerativeCore:
             )
             return final_answer["answer"]
         finally:
+            del core
             cls.freeup_memory()
 
 
