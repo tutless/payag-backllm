@@ -17,7 +17,7 @@ class QdrantStore(VectorStore):
         )
 
         self.qdrant_client = QdrantClient(host="qdrant", port=6333)
-        self.collection_name = "payag_legal_mid"
+        self.collection_name = "payag_legal_big"
         self.create_collection()
         self.qdrant = QdrantVectorStore(
             client=self.qdrant_client,
@@ -45,7 +45,7 @@ class QdrantStore(VectorStore):
         return self.qdrant.add_documents(documents=docs)
 
     def vector_retriever(self):
-        return self.qdrant.as_retriever()
+        return self.qdrant.as_retriever(search_kwargs={"k": 3})
 
     def store_name(self):
         print("Qdrant")
