@@ -7,9 +7,11 @@ from transformers import (
     AutoModelForCausalLM,
     pipeline,
 )
+from huggingface_hub import login
 from langchain_huggingface import HuggingFacePipeline
 
 load_dotenv()
+login(os.getenv("HF_TOKEN"))
 
 
 class LLModelPipeline:
@@ -35,12 +37,12 @@ class LLModelPipeline:
             "text-generation",
             model=self.model,
             tokenizer=self.tokenizer,
-            max_new_token=1024,
+            max_new_tokens=1024,
             temperature=0.1,
             repetition_penalty=1.1,
         )
 
     @classmethod
-    def load_pipeline(cls):
-        config = cls()
+    def load_pipeline(cls, model_id):
+        config = cls(model_id=model_id)
         return HuggingFacePipeline(pipeline=config.generation_pipe)
