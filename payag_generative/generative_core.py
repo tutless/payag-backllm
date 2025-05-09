@@ -10,7 +10,7 @@ from langchain import hub
 from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
-
+from langchain_openai import ChatOpenAI
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
@@ -31,9 +31,10 @@ class GenerativeCore:
         self.vstore = vstore
         self.repharase_prompt = hub.pull("langchain-ai/chat-langchain-rephrase")
         self.store = {}
-        self.chat_model = ChatNVIDIA(
-            model="meta/llama-3.1-405b-instruct", temperature=0.1, max_tokens=1024
-        )
+        self.chat_model = ChatOpenAI(model="gpt-4o")
+        # self.chat_model = ChatNVIDIA(
+        #     model="meta/llama-3.1-405b-instruct", temperature=0.1, max_tokens=1024
+        # )
         # self.chat_model = LLModelPipeline.load_pipeline(
         #     model_id="meta-llama/Llama-3.1-8B-Instruct"
         # )
