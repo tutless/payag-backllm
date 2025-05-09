@@ -103,7 +103,7 @@ class GenerativeCore:
             self.store[session_id] = ChatMessageHistory()
         return self.store[session_id]
 
-    def conversational_rag_chain(self, session_id: str):
+    def conversational_rag_chain(self):
         # return RunnableWithMessageHistory(
         #     self.rag_chain(),
         #     lambda _: self.get_session_history(session_id=session_id).chat_memory,
