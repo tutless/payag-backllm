@@ -1,10 +1,10 @@
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
-from vector_store import VectorStore
+from payag_generative.vector_store import VectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
-from db.main import main_db
+from payag_generative.db.main import main_db
 from sqlalchemy.orm import sessionmaker
 
 from langchain_qdrant import QdrantVectorStore
