@@ -1,4 +1,4 @@
-from db.model.db_declarative import BASE
+from payag_generative.db.model.db_declarative import BASE
 from sqlalchemy import Column, Integer, Text
 
 

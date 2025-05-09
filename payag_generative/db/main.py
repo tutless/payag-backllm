@@ -1,10 +1,10 @@
 from functools import wraps
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from db.model.db_declarative import BASE
-import db.model.section_model
+from payag_generative.db.model.db_declarative import BASE
+import payag_generative.db.model.section_model
 from langchain_core.documents import Document
-from db.model.section_model import SectionVector
+from payag_generative.db.model.section_model import SectionVector
 
 
 def main_db(function):
