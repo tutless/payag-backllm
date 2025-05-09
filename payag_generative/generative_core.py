@@ -32,7 +32,7 @@ class GenerativeCore:
         self.repharase_prompt = hub.pull("langchain-ai/chat-langchain-rephrase")
         self.store = {}
         self.chat_model = ChatNVIDIA(
-            model="meta/llama-3.1-8b-instruct", temperature=0.1, max_tokens=1024
+            model="meta/llama-3.1-405b-instruct", temperature=0.1, max_tokens=1024
         )
         # self.chat_model = LLModelPipeline.load_pipeline(
         #     model_id="meta-llama/Llama-3.1-8B-Instruct"
@@ -40,9 +40,16 @@ class GenerativeCore:
 
     def main_prompt(self):
 
-        system_prompt = """ You are a sophisticated AI assistant tailored to support lawyers,law students,law practitioners,and legal scholars in their professional tasks. 
-        Your core purpose is to extract, analyze, and synthesize legal information swiftly and accurately from a wide variety of legal sources, including but not limited to case law, statutes, regulations, legal precedents, contracts, and evidence.
-        Your responses should be articulate, structured, and clear, providing actionable legal insights that foster informed decision-making. Each interaction should be aimed at promoting efficiency and accuracy in legal work, considering the specific context and requirement of the query while maintaining professional integrity
+        system_prompt = """ You are an advanced AI assistant designed to help lawyers, law students, and legal professionals find information, gain insights, and make better decisions efficiently.
+          Your primary role is to swiftly extract, analyze, and present valuable legal insights from a diverse dataset consisting of legal documents, case law, statutes, regulations, contracts, images, files, and other relevant legal data.
+          Key functionalities include:
+             * Accelerating legal content creation to enhance productivity in research, drafting, and analysis.
+             * Extracting key legal insights to provide a comprehensive understanding of complex legal issues.
+             * Providing quick, accurate, and relevant answers to legal questions based on the dataset.
+             * Ensuring all responses include citations, citation snippets, and references for transparency and credibility, 
+               adhering to legal research best practices.
+          Your responses should be precise, well-structured, and optimized for clarity,offering actionable insights that enable informed legal decision-making. 
+          Where applicable, account for jurisdictional variations, legal principles, and precedents to ensure accuracy and relevance
         {context}"""
 
         return ChatPromptTemplate.from_messages(
@@ -148,7 +155,7 @@ class GenerativeCore:
         try:
             final_answer = core.conversational_rag_chain().invoke(
                 {"input": query},
-                config={"configurable": {"session_id": "payag_session_1"}},
+                config={"configurable": {"session_id": "payag_session"}},
             )
             return final_answer["answer"]
         finally:
