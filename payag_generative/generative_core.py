@@ -11,7 +11,7 @@ from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
 
-# from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from payag_generative.qdrant_store import QdrantStore
@@ -91,33 +91,33 @@ class GenerativeCore:
             combine_docs_chain=question_answer_chain,
         )
 
-    def get_session_history(self, session_id: str) -> ConversationBufferWindowMemory:
-        if session_id not in self.store:
-            self.store[session_id] = ConversationBufferWindowMemory(
-                k=5, return_messages=True
-            )
-        return self.store[session_id]
-
-    # def get_session_history(self) -> BaseChatMessageHistory:
+    # def get_session_history(self, session_id: str) -> ConversationBufferWindowMemory:
     #     if session_id not in self.store:
-    #         self.store[session_id] = ChatMessageHistory
+    #         self.store[session_id] = ConversationBufferWindowMemory(
+    #             k=5, return_messages=True
+    #         )
     #     return self.store[session_id]
 
+    def get_session_history(self, session_id) -> BaseChatMessageHistory:
+        if session_id not in self.store:
+            self.store[session_id] = ChatMessageHistory()
+        return self.store[session_id]
+
     def conversational_rag_chain(self, session_id: str):
-        return RunnableWithMessageHistory(
-            self.rag_chain(),
-            lambda _: self.get_session_history(session_id=session_id).chat_memory,
-            input_messages_key="input",
-            history_messages_key="chat_history",
-            output_messages_key="answer",
-        )
         # return RunnableWithMessageHistory(
         #     self.rag_chain(),
-        #     self.get_session_history(),
+        #     lambda _: self.get_session_history(session_id=session_id).chat_memory,
         #     input_messages_key="input",
         #     history_messages_key="chat_history",
         #     output_messages_key="answer",
         # )
+        return RunnableWithMessageHistory(
+            self.rag_chain(),
+            self.get_session_history,
+            input_messages_key="input",
+            history_messages_key="chat_history",
+            output_messages_key="answer",
+        )
 
     @staticmethod
     def freeup_memory():
@@ -126,34 +126,34 @@ class GenerativeCore:
 
         gc.collect()
 
-    @classmethod
-    def answer(cls, query: str):
-        store = QdrantStore()
-        core = cls(store)
-        try:
-            final_answer = core.conversational_rag_chain(
-                session_id="payag_session_1"
-            ).invoke(
-                {"input": query},
-            )
-            return final_answer["answer"]
-        finally:
-            del core
-            cls.freeup_memory()
-
     # @classmethod
     # def answer(cls, query: str):
     #     store = QdrantStore()
     #     core = cls(store)
     #     try:
-    #         final_answer = core.conversational_rag_chain().invoke(
+    #         final_answer = core.conversational_rag_chain(
+    #             session_id="payag_session_1"
+    #         ).invoke(
     #             {"input": query},
-    #             config={"configurable": {"session_id": "payag_session_1"}},
     #         )
     #         return final_answer["answer"]
     #     finally:
     #         del core
     #         cls.freeup_memory()
+
+    @classmethod
+    def answer(cls, query: str):
+        store = QdrantStore()
+        core = cls(store)
+        try:
+            final_answer = core.conversational_rag_chain().invoke(
+                {"input": query},
+                config={"configurable": {"session_id": "payag_session_1"}},
+            )
+            return final_answer["answer"]
+        finally:
+            del core
+            cls.freeup_memory()
 
 
 # if __name__ == "__main__":
