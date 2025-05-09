@@ -99,7 +99,7 @@ class QdrantStore(VectorStore):
     #         print(inserted)
 
     def vector_retriever(self):
-        return self.qdrant.as_retriever(search_kwargs={"k": 3})
+        return self.qdrant.as_retriever()
 
     def store_name(self):
         print("Qdrant")
